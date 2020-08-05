@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>JavaScript Server Integration</title>
+    <script src="communicator_server_integration.js"></script>
+
+    <style type="text/css"></style>
+
+    <script type="text/javascript">
+        function doRequest() {
+            var serviceBrokerEndpoint = document.getElementById("serviceBrokerEndpoint");
+            requestService(serviceBrokerEndpoint.value);
+        }
+
+        function requestService(serviceBrokerEndpoint) {
+            var endpoint = serviceBrokerEndpoint;
+
+            var serviceBroker = new Communicator.ServiceBroker(endpoint);
+            var serviceRequest = new Communicator.ServiceRequest(Communicator.ServiceClass.CSR_Session);
+
+            serviceBroker.request(serviceRequest).then(function (serviceResponse) {
+                var serviceProtocol = serviceResponse.getEndpoints().hasOwnProperty(Communicator.ServiceProtocol.WS) ? Communicator.ServiceProtocol.WS : Communicator.ServiceProtocol.WSS;
+                var clientEndpoint = serviceResponse.getEndpoints()[serviceProtocol];
+
+                alert("Client Session " + serviceResponse.getServiceId() + " started at: " + clientEndpoint);
+            },
+            function (serviceResponse) {
+                alert("Unable to start client session: " + serviceResponse.getReason())
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>JavaScript Server Integration</h1>
+
+    <div style="margin:auto">Ensure that the HOOPS Server has been started and the service broker endpoint is correct.</div>
+    <div>
+        <label for="serviceBrokerEndpoint">Service Broker Endpoint:</label><input id="serviceBrokerEndpoint" type="text" value="http://localhost:11182" />
+    </div>
+    <button onclick="doRequest();">Request Service!</button>
+</body>
+</html>

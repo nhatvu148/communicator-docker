@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application displayName="HOOPS Server Distributed Mode" runUntil="input" processIdFile="communicator_viewer_services" license="{LICENSE_KEY}">
+  <host displayName="Service broker host" bindToAddress="{BIND_TO_ADDRESS}" commandLinePrefix="service-broker-host" publicName="{PUBLIC_NAME}" publicIpAddress="{PUBLIC_IP_ADDRESS}" useIpAddress="{USE_IP_ADDRESS}" logChannel="servicebroker">
+    <httpServer port="{SERVICE_BROKER_HOST_PORT}" threadingModel="perconnection" maxConnections="500"/>
+    <component class="techsoft3d.communicator.servicecomponent.servicebroker" displayName="Service broker - {PUBLIC_NAME_OR_IP_ADDRESS}" commandLinePrefix="service-broker">
+      <logDirectory>{LOG_DIRECTORY}</logDirectory>
+    </component>
+  </host>
+  <host displayName="Event log host" bindToAddress="{BIND_TO_ADDRESS}" commandLinePrefix="event-log-host" publicName="{PUBLIC_NAME}" publicIpAddress="{PUBLIC_IP_ADDRESS}" useIpAddress="{USE_IP_ADDRESS}" logChannel="eventlog">
+    <httpServer port="{EVENT_LOG_HOST_PORT}" threadingModel="perconnection" maxConnections="500"/>
+    <component class="techsoft3d.communicator.servicecomponent.eventlog" displayName="Event log - {PUBLIC_NAME_OR_IP_ADDRESS}" commandLinePrefix="event-log">
+      <serviceBrokerEndpoint>http://{PUBLIC_NAME_OR_IP_ADDRESS}:{SERVICE_BROKER_HOST_PORT}</serviceBrokerEndpoint>
+      <keepEventsInMemory>no</keepEventsInMemory>
+      <logDirectory>{LOG_DIRECTORY}</logDirectory>
+    </component>
+  </host>
+  <host displayName="SC CSR Process Manager Host" bindToAddress="{BIND_TO_ADDRESS}" commandLinePrefix="sc-server-process-manager-host" publicName="{PUBLIC_NAME}" publicIpAddress="{PUBLIC_IP_ADDRESS}" useIpAddress="{USE_IP_ADDRESS}" logChannel="sccsrprocessmanager">
+    <httpServer port="{SC_CSR_PROCESS_MANAGER_HOST_PORT}" threadingModel="perconnection" maxConnections="500"/>
+    <component class="techsoft3d.communicator.servicecomponent.processmanager" displayName="SC CSR Process Manager - {PUBLIC_NAME_OR_IP_ADDRESS}" commandLinePrefix="sc-server-process-manager">
+      <serviceSubclass>techsoft3d.communicator.serviceinterface.processmanager.sccsr</serviceSubclass>
+      <serviceBrokerEndpoint>http://{PUBLIC_NAME_OR_IP_ADDRESS}:{SERVICE_BROKER_HOST_PORT}</serviceBrokerEndpoint>
+      <logDirectory>{LOG_DIRECTORY}</logDirectory>
+      <dynamicInstances>{SC_CSR_PROCESS_MANAGER_INSTANCES}</dynamicInstances>
+      <executable file="sc_server_app" separateWindow="no">
+        <argument type="key">-instanceid</argument>
+        <argument type="runtimevalue">applicationinstanceid</argument>
+        <argument type="key">-settingsdirectory</argument>
+        <argument type="runtimevalue">settingsdirectory</argument>
+        <argument type="key">-settingsfile</argument>
+        <argument type="value">viewer_csr.xml</argument>
+        <argument type="key">-regionpath</argument>
+        <argument type="runtimevalue">regionpath</argument>
+        <argument type="key">-terminaloutput</argument>
+        <argument type="value">no</argument>
+        <argument type="key">-dynamic</argument>
+        <argument type="runtimevalue">isdynamicinstance</argument>
+        <argument type="key">-statusfile</argument>
+        <argument type="runtimevalue">statusfile</argument>
+        <argument type="key">-scserverhost.http.port</argument>
+        <argument type="rangevalue">[{SC_CSR_HOST_BASE_PORT}-]</argument>
+        <argument type="key">-scserver.instanceid</argument>
+        <argument type="runtimevalue">instanceid</argument>
+        <argument type="key">-scserver.displayname</argument>
+        <argument type="rangevalue">SC CSR #[01-] - {PUBLIC_NAME_OR_IP_ADDRESS}</argument>
+        <argument type="key">-scserver.processmanagerendpoint</argument>
+        <argument type="runtimevalue">processmanagerendpoint</argument>
+        <argument type="key">-scserver.port</argument>
+        <argument type="rangevalue">[{SC_CSR_BASE_PORT}-]</argument>
+        <!--ssl_configuration_begin-->
+        <argument type="key">-scserver.sslcertificate</argument>
+        <argument type="value">{SC_SSL_CERTIFICATE}</argument>
+        <argument type="key">-scserver.sslprivatekey</argument>
+        <argument type="value">{SC_SSL_PRIVATE_KEY}</argument>
+        <!--ssl_configuration_end-->
+      </executable>
+    </component>
+  </host>
+  <host displayName="SC SSR Process Manager Host" bindToAddress="{BIND_TO_ADDRESS}" commandLinePrefix="sc-server-process-manager-host" publicName="{PUBLIC_NAME}" publicIpAddress="{PUBLIC_IP_ADDRESS}" useIpAddress="{USE_IP_ADDRESS}" logChannel="scssrprocessmanager">
+    <httpServer port="{SC_SSR_PROCESS_MANAGER_HOST_PORT}" threadingModel="perconnection" maxConnections="500"/>
+    <component class="techsoft3d.communicator.servicecomponent.processmanager" displayName="SC SSR Process Manager - {PUBLIC_NAME_OR_IP_ADDRESS}" commandLinePrefix="sc-server-process-manager">
+      <serviceSubclass>techsoft3d.communicator.serviceinterface.processmanager.scssr</serviceSubclass>
+      <serviceBrokerEndpoint>http://{PUBLIC_NAME_OR_IP_ADDRESS}:{SERVICE_BROKER_HOST_PORT}</serviceBrokerEndpoint>
+      <logDirectory>{LOG_DIRECTORY}</logDirectory>
+      <dynamicInstances>{SC_SSR_PROCESS_MANAGER_INSTANCES}</dynamicInstances>
+      <executable file="sc_server_app" separateWindow="no">
+        <argument type="key">-instanceid</argument>
+        <argument type="runtimevalue">applicationinstanceid</argument>
+        <argument type="key">-settingsdirectory</argument>
+        <argument type="runtimevalue">settingsdirectory</argument>
+        <argument type="key">-settingsfile</argument>
+        <argument type="value">viewer_ssr.xml</argument>
+        <argument type="key">-regionpath</argument>
+        <argument type="runtimevalue">regionpath</argument>
+        <argument type="key">-terminaloutput</argument>
+        <argument type="value">no</argument>
+        <argument type="key">-dynamic</argument>
+        <argument type="runtimevalue">isdynamicinstance</argument>
+        <argument type="key">-statusfile</argument>
+        <argument type="runtimevalue">statusfile</argument>
+        <argument type="key">-scserverhost.http.port</argument>
+        <argument type="rangevalue">[{SC_SSR_HOST_BASE_PORT}-]</argument>
+        <argument type="key">-scserver.instanceid</argument>
+        <argument type="runtimevalue">instanceid</argument>
+        <argument type="key">-scserver.displayname</argument>
+        <argument type="rangevalue">SC SSR #[01-] - {PUBLIC_NAME_OR_IP_ADDRESS}</argument>
+        <argument type="key">-scserver.processmanagerendpoint</argument>
+        <argument type="runtimevalue">processmanagerendpoint</argument>
+        <argument type="key">-scserver.port</argument>
+        <argument type="rangevalue">[{SC_SSR_BASE_PORT}-]</argument>
+        <!--ssl_configuration_begin-->
+        <argument type="key">-scserver.sslcertificate</argument>
+        <argument type="value">{SC_SSL_CERTIFICATE}</argument>
+        <argument type="key">-scserver.sslprivatekey</argument>
+        <argument type="value">{SC_SSL_PRIVATE_KEY}</argument>
+        <!--ssl_configuration_end-->
+      </executable>
+    </component>
+  </host>
+</application>

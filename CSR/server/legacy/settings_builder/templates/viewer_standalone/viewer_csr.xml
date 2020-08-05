@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application displayName="HOOPS Communicator Stream Cache CSR" runUntil="input" interaction="interactive" license="{LICENSE_KEY}">
+  <host displayName="Stream Cache CSR Host" bindToAddress="{BIND_TO_ADDRESS}" commandLinePrefix="sc-server-host" publicName="{PUBLIC_NAME}" publicIpAddress="{PUBLIC_IP_ADDRESS}" useIpAddress="{USE_IP_ADDRESS}" logChannel="sccsr">
+    <component class="techsoft3d.communicator.servicecomponent.streamcache" displayName="Stream Cache CSR" commandLinePrefix="sc-server">
+	  <renderingLocation>client</renderingLocation>
+      <serviceMode>standalone</serviceMode>
+      <logDirectory>{LOG_DIRECTORY}</logDirectory>
+      <modelSearchDirectory>{SC_SERVER_MODEL_SEARCH_DIRECTORY}</modelSearchDirectory>
+	  <workspacePath>{SC_WORKSPACE_PATH}</workspacePath>
+      <allowAbsoluteDirectoryPaths>yes</allowAbsoluteDirectoryPaths>
+      <!--ssl_configuration_begin-->
+      <sslCertificate>{SC_SSL_CERTIFICATE}</sslCertificate>
+      <sslPrivateKey>{SC_SSL_PRIVATE_KEY}</sslPrivateKey>
+      <!--ssl_configuration_end-->
+    </component>
+  </host>
+</application>
